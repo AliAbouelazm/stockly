@@ -323,14 +323,22 @@ if not tickers:
             initialize_schema(conn2)
             import subprocess
             import sys
-            result = subprocess.run([sys.executable, "create_sample_data.py"], 
-                                  capture_output=True, text=True, cwd=Path(__file__).parent.parent.parent)
+            result = subprocess.run(
+                [sys.executable, "create_sample_data.py"], 
+                capture_output=True, 
+                text=True, 
+                cwd=Path(__file__).parent.parent.parent,
+                timeout=120
+            )
             if result.returncode == 0:
                 st.success("Sample data created! Please refresh the page.")
                 st.rerun()
             else:
                 st.error(f"Error creating sample data: {result.stderr}")
+                st.code(result.stdout)
             conn2.close()
+        except subprocess.TimeoutExpired:
+            st.error("Sample data creation timed out. Please try again.")
         except Exception as e:
             st.error(f"Error: {e}")
             import traceback
@@ -338,12 +346,48 @@ if not tickers:
     st.stop()
 
 if not has_predictions and tickers:
-    st.warning("⚠️ **No predictions found in database.** To see results, you need to:")
-    st.markdown("""
-    1. Train models: `python src/models/train_baseline_models.py` and `python src/models/train_lstm.py`
-    2. Generate predictions: `python src/models/generate_predictions.py`
+    st.warning("⚠️ **No predictions found in database.**")
     
-    Or run this in your terminal:
+    if st.button("🚀 Generate Predictions Now", type="primary"):
+        with st.spinner("Training models and generating predictions... This may take a few minutes."):
+            try:
+                import subprocess
+                import sys
+                from pathlib import Path
+                
+                steps = [
+                    ("Training baseline models...", ["src/models/train_baseline_models.py"]),
+                    ("Training LSTM model...", ["src/models/train_lstm.py"]),
+                    ("Generating predictions...", ["src/models/generate_predictions.py"])
+                ]
+                
+                for step_name, script in steps:
+                    st.write(f"**{step_name}**")
+                    result = subprocess.run(
+                        [sys.executable] + script,
+                        capture_output=True,
+                        text=True,
+                        cwd=Path(__file__).parent.parent.parent,
+                        timeout=300
+                    )
+                    if result.returncode != 0:
+                        st.error(f"Error in {step_name}: {result.stderr}")
+                        st.stop()
+                    else:
+                        st.success(f"✅ {step_name} completed")
+                
+                st.success("🎉 All predictions generated! Refreshing...")
+                st.rerun()
+                
+            except subprocess.TimeoutExpired:
+                st.error("Process timed out. Please try again.")
+            except Exception as e:
+                st.error(f"Error: {e}")
+                import traceback
+                st.code(traceback.format_exc())
+    
+    st.markdown("""
+    **Or run manually in terminal:**
     ```bash
     python create_sample_data.py
     python src/models/train_baseline_models.py
