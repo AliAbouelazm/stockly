@@ -172,11 +172,61 @@ st.markdown("""
     }
     
     .stSelectbox [data-baseweb="select"] {
-        color: #000000;
+        color: #000000 !important;
     }
     
     .stSelectbox [data-baseweb="select"] > div {
-        color: #000000;
+        color: #000000 !important;
+    }
+    
+    [data-baseweb="select"] {
+        color: #000000 !important;
+    }
+    
+    [data-baseweb="select"] input {
+        color: #000000 !important;
+    }
+    
+    [data-baseweb="select"] > div {
+        color: #000000 !important;
+    }
+    
+    .stSelectbox [data-baseweb="popover"] {
+        color: #000000 !important;
+    }
+    
+    .stSelectbox [data-baseweb="popover"] > div {
+        color: #000000 !important;
+    }
+    
+    .stDateInput [data-baseweb="input"] {
+        color: #000000 !important;
+    }
+    
+    .stDateInput [data-baseweb="input"] input {
+        color: #000000 !important;
+    }
+    
+    .stAlert p {
+        color: #000000 !important;
+        font-weight: 400 !important;
+    }
+    
+    .stAlert [data-baseweb="notification"] p {
+        color: #000000 !important;
+        font-weight: 400 !important;
+    }
+    
+    .stWarning {
+        color: #000000 !important;
+    }
+    
+    .stError {
+        color: #000000 !important;
+    }
+    
+    .stInfo {
+        color: #000000 !important;
     }
     
     .sidebar .sidebar-content {
