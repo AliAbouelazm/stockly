@@ -105,11 +105,29 @@ st.markdown("""
     .stSelectbox>div>div {
         background-color: #ffffff;
         border: 1px solid #cccccc;
+        color: #000000;
+    }
+    
+    .stSelectbox>div>div>div {
+        color: #000000;
+    }
+    
+    .stSelectbox input {
+        color: #000000;
     }
     
     .stDateInput>div>div {
         background-color: #ffffff;
         border: 1px solid #cccccc;
+        color: #000000;
+    }
+    
+    .stDateInput input {
+        color: #000000;
+    }
+    
+    .stDateInput>div>div>div {
+        color: #000000;
     }
     
     .stMetric {
@@ -137,6 +155,28 @@ st.markdown("""
     body, p, div, span {
         font-weight: 200;
         letter-spacing: 1px;
+    }
+    
+    .stAlert {
+        color: #000000;
+    }
+    
+    .stAlert [data-baseweb="notification"] {
+        color: #000000;
+        background-color: #f5f5f5;
+        border: 1px solid #cccccc;
+    }
+    
+    .element-container {
+        color: #000000;
+    }
+    
+    .stSelectbox [data-baseweb="select"] {
+        color: #000000;
+    }
+    
+    .stSelectbox [data-baseweb="select"] > div {
+        color: #000000;
     }
     
     .sidebar .sidebar-content {
