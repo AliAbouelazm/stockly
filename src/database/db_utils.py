@@ -78,29 +78,48 @@ def insert_features(conn: sqlite3.Connection, symbol_id: int, features_df: pd.Da
     ]
     
     for _, row in features_df.iterrows():
-        values = [symbol_id, row["date"]] + [row.get(col) for col in feature_cols[1:]]
+        date_val = row["date"]
+        if hasattr(date_val, 'strftime'):
+            date_val = date_val.strftime("%Y-%m-%d")
+        elif isinstance(date_val, pd.Timestamp):
+            date_val = date_val.strftime("%Y-%m-%d")
+        
+        values = [symbol_id, date_val]
+        for col in feature_cols[1:]:
+            val = row.get(col)
+            if pd.isna(val):
+                values.append(None)
+            else:
+                values.append(float(val))
+        
         placeholders = ",".join(["?"] * len(values))
         cols = "symbol_id,date," + ",".join(feature_cols[1:])
         
         conn.execute(f"""
             INSERT OR REPLACE INTO features ({cols})
             VALUES ({placeholders})
-        """, values)
+        """, tuple(values))
     conn.commit()
 
 
 def insert_targets(conn: sqlite3.Connection, symbol_id: int, targets_df: pd.DataFrame) -> None:
     """Insert or replace target data."""
     for _, row in targets_df.iterrows():
+        date_val = row["date"]
+        if hasattr(date_val, 'strftime'):
+            date_val = date_val.strftime("%Y-%m-%d")
+        elif isinstance(date_val, pd.Timestamp):
+            date_val = date_val.strftime("%Y-%m-%d")
+        
         conn.execute("""
             INSERT OR REPLACE INTO targets 
             (symbol_id, date, next_day_return, direction_label)
             VALUES (?, ?, ?, ?)
         """, (
             symbol_id,
-            row["date"],
-            row["next_day_return"],
-            row["direction_label"]
+            date_val,
+            float(row["next_day_return"]) if not pd.isna(row["next_day_return"]) else None,
+            int(row["direction_label"])
         ))
     conn.commit()
 

@@ -25,7 +25,7 @@ for ticker in DEFAULT_TICKERS[:3]:
     prices = np.maximum(prices, 10)
     
     prices_df = pd.DataFrame({
-        "date": dates,
+        "date": dates.strftime("%Y-%m-%d"),
         "open": prices * (1 + np.random.randn(len(dates)) * 0.01),
         "high": prices * (1 + np.abs(np.random.randn(len(dates)) * 0.02)),
         "low": prices * (1 - np.abs(np.random.randn(len(dates)) * 0.02)),
