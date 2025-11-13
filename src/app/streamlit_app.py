@@ -310,6 +310,9 @@ except Exception as e:
     import traceback
     st.error(f"Error checking predictions: {e}")
     st.code(traceback.format_exc())
+finally:
+    if conn:
+        conn.close()
 
 if not tickers:
     st.info("No tickers found. Creating sample data...")
