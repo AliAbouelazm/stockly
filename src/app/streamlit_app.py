@@ -20,7 +20,7 @@ st.set_page_config(page_title="stockly", layout="wide", initial_sidebar_state="e
 
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@100;200;300;400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@100;200;300;400&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
     
     * {
         font-family: 'JetBrains Mono', 'Space Mono', monospace;
@@ -34,6 +34,25 @@ st.markdown("""
     
     .stApp {
         background-color: #000000;
+    }
+    
+    .logo-header {
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        border-bottom: 2px solid #00FF00;
+        padding: 1.5rem 0;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .logo-text {
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 700;
+        font-size: 3.5rem;
+        color: #00FF00;
+        letter-spacing: 8px;
+        text-transform: uppercase;
+        margin: 0;
+        text-shadow: 0 0 10px #00FF00, 0 0 20px #00FF00;
     }
     
     h1, h2, h3 {
@@ -128,7 +147,11 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.title("stockly")
+st.markdown("""
+<div class="logo-header">
+    <div class="logo-text">stockly</div>
+</div>
+""", unsafe_allow_html=True)
 
 conn = get_connection()
 try:
