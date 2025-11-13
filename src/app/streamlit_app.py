@@ -284,9 +284,15 @@ if not tickers:
             st.error(f"Error: {e}")
     st.stop()
 
+from src.config import DB_PATH
+st.write(f"**Database location:** `{DB_PATH.resolve()}`")
+
 conn_check = get_connection()
 has_predictions = False
 try:
+    total_preds = pd.read_sql_query("SELECT COUNT(*) as cnt FROM predictions", conn_check)
+    st.write(f"**Total predictions in DB:** {total_preds.iloc[0]['cnt']}")
+    
     predictions_check = pd.read_sql_query("""
         SELECT DISTINCT s.ticker, p.model_name 
         FROM predictions p
@@ -298,6 +304,10 @@ try:
         models_found = sorted(predictions_check['model_name'].unique())
         st.success(f"✅ Found predictions for tickers: {', '.join(tickers_found)}")
         st.info(f"Available models: {', '.join(models_found)}")
+    else:
+        st.warning("Query returned empty - checking symbols table...")
+        symbols_check = pd.read_sql_query("SELECT COUNT(*) as cnt FROM symbols", conn_check)
+        st.write(f"Symbols in DB: {symbols_check.iloc[0]['cnt']}")
 except Exception as e:
     has_predictions = False
     import traceback
