@@ -29,33 +29,33 @@ st.markdown("""
     }
     
     .main {
-        background-color: #1a1a1a;
+        background-color: #ffffff;
     }
     
     .stApp {
-        background-color: #1a1a1a;
+        background-color: #ffffff;
     }
     
     .logo-header {
-        background: #1a1a1a;
-        border-bottom: 1px solid #333333;
-        padding: 1.5rem 0;
+        background: #ffffff;
+        border-bottom: 1px solid #cccccc;
+        padding: 1rem 0;
         margin-bottom: 2rem;
         text-align: center;
     }
     
     .logo-text {
-        font-family: 'Orbitron', sans-serif;
-        font-weight: 700;
-        font-size: 3.5rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 300;
+        font-size: 2rem;
         color: #000000;
-        letter-spacing: 8px;
-        text-transform: uppercase;
+        letter-spacing: 4px;
+        text-transform: lowercase;
         margin: 0;
     }
     
     h1, h2, h3, h4 {
-        color: #00FF00;
+        color: #000000;
         font-family: 'JetBrains Mono', monospace;
         font-weight: 200;
         letter-spacing: 2px;
@@ -78,9 +78,9 @@ st.markdown("""
     }
     
     .stButton>button {
-        background-color: #00FF00;
-        color: #000000;
-        border: 2px solid #00FF00;
+        background-color: #000000;
+        color: #ffffff;
+        border: 2px solid #000000;
         font-family: 'JetBrains Mono', monospace;
         font-weight: 200;
         padding: 0.4rem 1.2rem;
@@ -90,12 +90,12 @@ st.markdown("""
     }
     
     .stButton>button:hover {
-        background-color: #00CC00;
-        border-color: #00CC00;
+        background-color: #333333;
+        border-color: #333333;
     }
     
     .stSelectbox label, .stDateInput label {
-        color: #00FF00;
+        color: #000000;
         font-family: 'JetBrains Mono', monospace;
         font-weight: 200;
         letter-spacing: 1px;
@@ -103,23 +103,23 @@ st.markdown("""
     }
     
     .stSelectbox>div>div {
-        background-color: #0a0a0a;
-        border: 1px solid #333333;
+        background-color: #ffffff;
+        border: 1px solid #cccccc;
     }
     
     .stDateInput>div>div {
-        background-color: #0a0a0a;
-        border: 1px solid #333333;
+        background-color: #ffffff;
+        border: 1px solid #cccccc;
     }
     
     .stMetric {
-        background-color: #0a0a0a;
-        border: 1px solid #00FF00;
+        background-color: #f5f5f5;
+        border: 1px solid #cccccc;
         padding: 1rem;
     }
     
     .stMetric label {
-        color: #00FF00;
+        color: #000000;
         font-family: 'JetBrains Mono', monospace;
         font-weight: 200;
         letter-spacing: 1px;
@@ -127,7 +127,7 @@ st.markdown("""
     }
     
     .stMetric [data-testid="stMetricValue"] {
-        color: #00FF00;
+        color: #000000;
         font-family: 'JetBrains Mono', monospace;
         font-weight: 200;
         letter-spacing: 1px;
@@ -140,11 +140,11 @@ st.markdown("""
     }
     
     .sidebar .sidebar-content {
-        background-color: #1a1a1a;
+        background-color: #ffffff;
     }
     
     .sidebar h1, .sidebar h2, .sidebar h3 {
-        color: #00FF00;
+        color: #000000;
         font-family: 'JetBrains Mono', monospace;
         font-weight: 200;
         letter-spacing: 2px;
@@ -152,7 +152,7 @@ st.markdown("""
     }
     
     .sidebar label {
-        color: #00FF00;
+        color: #000000;
         font-family: 'JetBrains Mono', monospace;
         font-weight: 200;
         letter-spacing: 1px;
@@ -249,37 +249,39 @@ if run_button and len(date_range) == 2:
             with chart_col1:
                 st.markdown("#### price & signals")
                 fig1, ax1 = plt.subplots(figsize=(10, 6))
-                ax1.set_facecolor(PIXEL_COLORS["background"])
-                fig1.patch.set_facecolor(PIXEL_COLORS["background"])
+                ax1.set_facecolor("#ffffff")
+                fig1.patch.set_facecolor("#ffffff")
                 
                 if not prices_df.empty:
                     prices_df["date"] = pd.to_datetime(prices_df["date"])
                     ax1.plot(prices_df["date"], prices_df["adjusted_close"], 
-                            color=PIXEL_COLORS["price"], linewidth=3, marker="s", markersize=3)
-                    ax1.set_facecolor(PIXEL_COLORS["background"])
-                    ax1.tick_params(colors=PIXEL_COLORS["text"])
-                    ax1.set_xlabel("date", color=PIXEL_COLORS["text"], fontfamily="JetBrains Mono")
-                    ax1.set_ylabel("price", color=PIXEL_COLORS["text"], fontfamily="JetBrains Mono")
-                    ax1.set_title(f"{selected_ticker}", color=PIXEL_COLORS["text"], fontfamily="JetBrains Mono", fontweight=200)
+                            color="#000000", linewidth=2, marker="s", markersize=3)
+                    ax1.set_facecolor("#ffffff")
+                    ax1.tick_params(colors="#000000")
+                    ax1.set_xlabel("date", color="#000000", fontfamily="JetBrains Mono")
+                    ax1.set_ylabel("price", color="#000000", fontfamily="JetBrains Mono")
+                    ax1.set_title(f"{selected_ticker}", color="#000000", fontfamily="JetBrains Mono", fontweight=200)
+                    ax1.grid(True, color="#cccccc", linestyle="-", linewidth=0.5)
                     plt.tight_layout()
                     st.pyplot(fig1)
             
             with chart_col2:
                 st.markdown("#### performance")
                 fig2, ax2 = plt.subplots(figsize=(10, 6))
-                ax2.set_facecolor(PIXEL_COLORS["background"])
-                fig2.patch.set_facecolor(PIXEL_COLORS["background"])
+                ax2.set_facecolor("#ffffff")
+                fig2.patch.set_facecolor("#ffffff")
                 
                 ax2.plot(dates, results["portfolio_value"], 
-                        color=PIXEL_COLORS["up"], linewidth=3, marker="s", markersize=3, label="strategy")
+                        color="#000000", linewidth=2, marker="s", markersize=3, label="strategy")
                 ax2.plot(dates, results["buy_hold_value"], 
-                        color=PIXEL_COLORS["price"], linewidth=3, marker="s", markersize=3, label="buy & hold")
-                ax2.set_facecolor(PIXEL_COLORS["background"])
-                ax2.tick_params(colors=PIXEL_COLORS["text"])
-                ax2.set_xlabel("date", color=PIXEL_COLORS["text"], fontfamily="JetBrains Mono")
-                ax2.set_ylabel("portfolio value", color=PIXEL_COLORS["text"], fontfamily="JetBrains Mono")
-                ax2.set_title("cumulative returns", color=PIXEL_COLORS["text"], fontfamily="JetBrains Mono", fontweight=200)
-                ax2.legend(facecolor=PIXEL_COLORS["background"], edgecolor=PIXEL_COLORS["grid"], prop={"family": "JetBrains Mono"})
+                        color="#666666", linewidth=2, marker="s", markersize=3, label="buy & hold")
+                ax2.set_facecolor("#ffffff")
+                ax2.tick_params(colors="#000000")
+                ax2.set_xlabel("date", color="#000000", fontfamily="JetBrains Mono")
+                ax2.set_ylabel("portfolio value", color="#000000", fontfamily="JetBrains Mono")
+                ax2.set_title("cumulative returns", color="#000000", fontfamily="JetBrains Mono", fontweight=200)
+                ax2.legend(facecolor="#ffffff", edgecolor="#cccccc", prop={"family": "JetBrains Mono"})
+                ax2.grid(True, color="#cccccc", linestyle="-", linewidth=0.5)
                 plt.tight_layout()
                 st.pyplot(fig2)
         
