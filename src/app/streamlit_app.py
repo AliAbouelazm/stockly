@@ -256,36 +256,18 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.write("**App Version:** v3.0 - Enhanced Debug Mode")
-
-from src.config import DB_PATH
-import os
-
-db_path_str = str(DB_PATH.resolve())
-st.write(f"**Database location:** `{db_path_str}`")
-st.write(f"**Database exists:** {os.path.exists(db_path_str)}")
-
-if os.path.exists(db_path_str):
-    db_size = os.path.getsize(db_path_str)
-    st.write(f"**Database size:** {db_size:,} bytes")
-
 conn = get_connection()
 try:
     initialize_schema(conn)
     symbols_df = pd.read_sql_query("SELECT ticker FROM symbols ORDER BY ticker", conn)
     tickers = symbols_df["ticker"].tolist() if not symbols_df.empty else []
-    st.write(f"**Tickers in database:** {', '.join(tickers) if tickers else 'None'}")
 except Exception as e:
     tickers = []
-    st.error(f"Database issue: {e}")
-    import traceback
-    st.code(traceback.format_exc())
 
 has_predictions = False
 try:
     total_preds = pd.read_sql_query("SELECT COUNT(*) as cnt FROM predictions", conn)
     pred_count = total_preds.iloc[0]['cnt']
-    st.write(f"**Total predictions in DB:** {pred_count}")
     
     if pred_count > 0:
         predictions_check = pd.read_sql_query("""
@@ -294,22 +276,8 @@ try:
             JOIN symbols s ON p.symbol_id = s.id
         """, conn)
         has_predictions = not predictions_check.empty
-        if has_predictions:
-            tickers_found = sorted(predictions_check['ticker'].unique())
-            models_found = sorted(predictions_check['model_name'].unique())
-            st.success(f"✅ Found predictions for tickers: {', '.join(tickers_found)}")
-            st.info(f"Available models: {', '.join(models_found)}")
-        else:
-            st.warning("Query returned empty - checking symbols table...")
-            symbols_check = pd.read_sql_query("SELECT COUNT(*) as cnt FROM symbols", conn)
-            st.write(f"Symbols in DB: {symbols_check.iloc[0]['cnt']}")
-    else:
-        st.warning("Predictions table is empty!")
-except Exception as e:
+except Exception:
     has_predictions = False
-    import traceback
-    st.error(f"Error checking predictions: {e}")
-    st.code(traceback.format_exc())
 finally:
     if conn:
         conn.close()
@@ -346,11 +314,11 @@ if not tickers:
     st.stop()
 
 if not has_predictions and tickers:
-    st.warning("⚠️ **No predictions found in database.**")
+    st.warning("**No predictions found in database.**")
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("🚀 Generate Predictions Now", type="primary", use_container_width=True):
+        if st.button("Generate Predictions Now", type="primary", use_container_width=True):
             with st.spinner("Training models and generating predictions... This may take a few minutes."):
                 try:
                     import subprocess
@@ -390,11 +358,11 @@ if not has_predictions and tickers:
                             st.code(result.stdout)
                             st.stop()
                         else:
-                            st.success(f"✅ {step_name} completed")
+                            st.success(f"{step_name} completed")
                     
                     progress_bar.progress(1.0)
                     status_text.text("Complete!")
-                    st.success("🎉 All predictions generated! Refreshing...")
+                    st.success("All predictions generated! Refreshing...")
                     st.rerun()
                     
                 except subprocess.TimeoutExpired:
@@ -431,7 +399,6 @@ if run_button and len(date_range) == 2:
     start_date, end_date = date_range[0], date_range[1]
     model_name = "lstm_model"
     
-    st.write(f"**Testing:** {selected_ticker} from {start_date} to {end_date} with {model_name}")
     
     try:
         with st.spinner("running analysis..."):
