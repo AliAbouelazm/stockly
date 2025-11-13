@@ -2,7 +2,7 @@
 
 A complete stock market prediction and backtesting system with SQL-based data storage, multiple ML models (baseline + LSTM), and a retro pixel-style visualizer.
 
-## 🚀 Live Demo
+## Live Demo
 
 Try the interactive Streamlit app: **[https://sstockly.streamlit.app/](https://sstockly.streamlit.app/)**
 
