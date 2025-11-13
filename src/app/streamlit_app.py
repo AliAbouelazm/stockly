@@ -294,15 +294,18 @@ try:
     """, conn_check)
     has_predictions = not predictions_check.empty
     if has_predictions:
-        st.success(f"✅ Found predictions for: {', '.join(sorted(predictions_check['ticker'].unique()))}")
+        tickers_found = sorted(predictions_check['ticker'].unique())
+        models_found = sorted(predictions_check['model_name'].unique())
+        st.success(f"✅ Found predictions for tickers: {', '.join(tickers_found)}")
+        st.info(f"Available models: {', '.join(models_found)}")
 except Exception as e:
     has_predictions = False
     import traceback
     st.error(f"Error checking predictions: {e}")
     st.code(traceback.format_exc())
-
-if conn_check:
-    conn_check.close()
+finally:
+    if conn_check:
+        conn_check.close()
 
 if not has_predictions and tickers:
     st.warning("⚠️ **No predictions found in database.** To see results, you need to:")
@@ -325,7 +328,7 @@ with col1:
     selected_ticker = st.selectbox("ticker", tickers, key="ticker_select")
 
 with col2:
-    date_range = st.date_input("date range", value=(date(2022, 7, 1), date(2022, 12, 31)), key="date_range")
+    date_range = st.date_input("date range", value=(date(2022, 7, 31), date(2022, 8, 11)), key="date_range")
 
 with col3:
     st.write("")
@@ -336,6 +339,8 @@ if run_button and len(date_range) == 2:
     start_date, end_date = date_range[0], date_range[1]
     model_name = "lstm_model"
     
+    st.write(f"**Testing:** {selected_ticker} from {start_date} to {end_date} with {model_name}")
+    
     try:
         with st.spinner("running analysis..."):
             results = backtest_model(
@@ -344,6 +349,25 @@ if run_button and len(date_range) == 2:
                 start_date.strftime("%Y-%m-%d"),
                 end_date.strftime("%Y-%m-%d")
             )
+            
+            if not results:
+                st.error("No results returned from backtest_model")
+                st.info("Checking database directly...")
+                conn_debug = get_connection()
+                try:
+                    debug_df = pd.read_sql_query("""
+                        SELECT COUNT(*) as cnt FROM predictions p
+                        JOIN symbols s ON p.symbol_id = s.id
+                        WHERE s.ticker = ? AND p.model_name = ?
+                        AND p.date >= ? AND p.date <= ?
+                    """, conn_debug, params=[selected_ticker, model_name, 
+                                             start_date.strftime("%Y-%m-%d"), 
+                                             end_date.strftime("%Y-%m-%d")])
+                    st.write(f"Found {debug_df.iloc[0]['cnt']} predictions in database for this query")
+                except Exception as e2:
+                    st.error(f"Debug query error: {e2}")
+                finally:
+                    conn_debug.close()
         
         if results:
             metrics_col1, metrics_col2, metrics_col3, metrics_col4 = st.columns(4)
